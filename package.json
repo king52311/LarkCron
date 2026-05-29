@@ -8,9 +8,8 @@
     "git": "node git.js"
   },
   "dependencies": {
-    "node-cron": "^3.0.3",
-    "puppeteer-core": "^24.15.0",
-    "puppeteer": "^22.6.0"
+    "node-cron": "^4.2.1",
+    "puppeteer": "^24.43.1"
   },
   "type": "module"
 }

@@ -39,6 +39,10 @@ async function loadAndScheduleTasks() {
         }
 
         console.log(`\n🎉 所有任务加载完毕！共启动了 ${loadedCount} 个定时任务，正在后台静默运行...\n`);
+        if (loadedCount === 0) {
+            console.warn('[提示] 当前没有任何启用任务，进程将保持存活以等待后续挂载配置变更。');
+            setInterval(() => {}, 60 * 1000);
+        }
     } catch (error) {
         console.error('加载 task 目录失败，请确保目录存在:', error.message);
     }

@@ -3,5 +3,5 @@
   "cron": "* * * * *",
   "url": "https://www.baidu.com",
   "method": "GET",
-  "enabled": false
+  "enabled": true
 }
