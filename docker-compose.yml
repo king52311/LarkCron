@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   larkcron:
     build: . # 构建当前目录下的 Dockerfile
