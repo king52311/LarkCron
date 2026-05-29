@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "node-cron": "^3.0.3",
+    "puppeteer-core": "^24.15.0",
     "puppeteer": "^22.6.0"
-  }
+  },
+  "type": "module"
 }
