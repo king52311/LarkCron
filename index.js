@@ -53,6 +53,22 @@ function resolveChromeExecutablePath() {
     return candidates.find((p) => fs.existsSync(p));
 }
 
+async function saveScreenshotWithFallback(page, taskPath, taskName) {
+    const primaryPath = path.join(taskPath, 'result.png');
+    try {
+        await page.screenshot({ path: primaryPath });
+        return primaryPath;
+    } catch (error) {
+        if (error && error.code === 'EACCES') {
+            const fallbackPath = path.join('/tmp', `${taskName || 'task'}-result.png`);
+            await page.screenshot({ path: fallbackPath });
+            console.warn(`   --> 任务目录无写权限，截图已回退保存到: ${fallbackPath}`);
+            return fallbackPath;
+        }
+        throw error;
+    }
+}
+
 export async function run(taskPath, config) {
     console.log(`\n   --> 开始执行 [${config.name}] 任务...`);
     console.log(`   --> 请求目标: ${config.url}`);
@@ -97,8 +113,7 @@ export async function run(taskPath, config) {
         if (method === 'GET') {
             await page.goto(config.url, { waitUntil: 'networkidle2' });
 
-            const screenshotPath = path.join(taskPath, 'result.png');
-            await page.screenshot({ path: screenshotPath });
+            const screenshotPath = await saveScreenshotWithFallback(page, taskPath, config.name);
             console.log(`   --> GET 请求完成！页面截图已保存至: ${screenshotPath}`);
         } else if (method === 'POST') {
             const urlObj = new URL(config.url);
@@ -115,6 +130,7 @@ export async function run(taskPath, config) {
         }
     } catch (error) {
         console.error('   --> [错误] 任务执行时出错:', error);
+        throw error;
     } finally {
         if (browser) await browser.close();
     }

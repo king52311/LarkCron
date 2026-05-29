@@ -2,6 +2,7 @@ services:
   larkcron:
     build: . # 构建当前目录下的 Dockerfile
     container_name: larkcron-web-automation
+    user: "${UID:-1000}:${GID:-1000}" # 与宿主用户一致，避免挂载目录写权限问题
     environment:
       - TZ=Asia/Shanghai # 设置时区，确保 cron 表达式按北京时间准确执行
     volumes:
