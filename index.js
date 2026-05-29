@@ -33,6 +33,15 @@ function resolveChromeExecutablePath() {
         return process.env.PUPPETEER_EXECUTABLE_PATH;
     }
 
+    // Puppeteer 官方推荐路径解析（优先使用与当前版本匹配的浏览器）
+    try {
+        const p = puppeteer.executablePath();
+        if (p && fs.existsSync(p)) {
+            return p;
+        }
+    } catch {
+    }
+
     const candidates = [
         '/usr/bin/google-chrome-stable',
         '/usr/bin/google-chrome',
@@ -70,7 +79,7 @@ export async function run(taskPath, config) {
             launchOptions.executablePath = chromePath;
             console.log(`   --> 使用浏览器可执行文件: ${chromePath}`);
         } else {
-            console.warn('   --> 未检测到系统 Chrome 路径，Puppeteer 将尝试使用默认缓存浏览器。');
+            console.warn('   --> 未检测到可执行浏览器，Puppeteer 将尝试默认方式启动。');
         }
 
         browser = await puppeteer.launch(launchOptions);
