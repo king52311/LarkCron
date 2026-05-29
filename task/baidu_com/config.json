@@ -1,0 +1,7 @@
+{
+  "name": "百度自动登录测试",
+  "cron": "* * * * *",
+  "url": "https://www.baidu.com",
+  "method": "GET",
+  "enabled": false
+}

@@ -1,0 +1,14 @@
+{
+  "name": "larkcron",
+  "version": "1.0.0",
+  "description": "LarkCron web automation",
+  "main": "scheduler.js",
+  "scripts": {
+    "start": "node scheduler.js",
+    "git": "node git.js"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "puppeteer": "^22.6.0"
+  }
+}

@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  larkcron:
+    build: . # 构建当前目录下的 Dockerfile
+    container_name: larkcron-web-automation
+    environment:
+      - TZ=Asia/Shanghai # 设置时区，确保 cron 表达式按北京时间准确执行
+    volumes:
+      # 将本地的 task 目录挂载到容器内，以后新增或修改任务配置无需重启容器
+      - ./task:/app/task
+      # 若需要查看外部截图，可挂载当前目录 (可选)
+      # - ./:/app
+    restart: unless-stopped # 容器退出后自动重启
+    logging:
+      driver: "json-file"

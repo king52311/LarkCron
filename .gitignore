@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+
+# 忽略 task 目录下的所有内容
+task/*
+# 唯独放行 baidu_com 目录（! 表示反转忽略规则）
+!task/baidu_com/
