@@ -4,6 +4,7 @@ services:
     container_name: larkcron-web-automation
     environment:
       - TZ=Asia/Shanghai # 设置时区，确保 cron 表达式按北京时间准确执行
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable # 显式指定 Chrome 路径，避免缓存浏览器缺失
     volumes:
       # 将本地的 task 目录挂载到容器内，以后新增或修改任务配置无需重启容器
       - ./task:/app/task

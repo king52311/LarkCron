@@ -7,6 +7,10 @@ USER root
 # 设置工作目录
 WORKDIR /app
 
+# 显式指定 Chrome 路径并配置 Puppeteer 缓存目录
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+ENV PUPPETEER_CACHE_DIR=/home/pptruser/.cache/puppeteer
+
 # 仅先复制 package.json 和 package-lock.json 以利用 Docker 缓存层
 COPY package*.json ./
 

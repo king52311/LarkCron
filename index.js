@@ -9,7 +9,6 @@ async function loadCookies(cookiePath) {
         return [];
     }
 
-    // 优先按 ESM 模块读取：支持 export default []
     try {
         const moduleUrl = `${pathToFileURL(cookiePath).href}?t=${Date.now()}`;
         const cookieModule = await import(moduleUrl);
@@ -17,19 +16,32 @@ async function loadCookies(cookiePath) {
             return cookieModule.default;
         }
     } catch {
-        // 忽略并回退到文本解析
     }
 
-    // 兼容旧格式：cookie.js 直接写数组字面量
     const raw = (await fsp.readFile(cookiePath, 'utf8')).trim();
     if (!raw) return [];
 
     try {
         return JSON.parse(raw);
     } catch {
-        // 本地受信任文件，回退为表达式求值（允许尾逗号等非严格 JSON）
         return Function(`"use strict"; return (${raw});`)();
     }
+}
+
+function resolveChromeExecutablePath() {
+    if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
+        return process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    const candidates = [
+        '/usr/bin/google-chrome-stable',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/chromium',
+        '/opt/google/chrome/chrome'
+    ];
+
+    return candidates.find((p) => fs.existsSync(p));
 }
 
 export async function run(taskPath, config) {
@@ -53,8 +65,12 @@ export async function run(taskPath, config) {
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
         };
 
-        if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-            launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+        const chromePath = resolveChromeExecutablePath();
+        if (chromePath) {
+            launchOptions.executablePath = chromePath;
+            console.log(`   --> 使用浏览器可执行文件: ${chromePath}`);
+        } else {
+            console.warn('   --> 未检测到系统 Chrome 路径，Puppeteer 将尝试使用默认缓存浏览器。');
         }
 
         browser = await puppeteer.launch(launchOptions);
