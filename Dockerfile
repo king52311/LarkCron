@@ -1,5 +1,5 @@
 # 选用 Puppeteer 官方基础镜像（与 package-lock.json 里的版本对应最佳）
-FROM ghcr.io/puppeteer/puppeteer:22.15.0
+FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/ghcr.io/puppeteer/puppeteer:latest
 
 # 切换到 root 用户以便执行系统级权限操作（安装依赖和调整目录权限）
 USER root
